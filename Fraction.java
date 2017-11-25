@@ -98,6 +98,14 @@ public class Fraction {
         this(0,wholeNumber,1);
     }
     
+    public Fraction copy(Fraction fraction){
+        this.numerator = fraction.numerator;
+        this.denominator = fraction.denominator;
+        this.wholeNumber = fraction.wholeNumber;
+        
+        return fraction;
+    }
+    
     public int getNumerator(){
         return this.numerator;
     }
