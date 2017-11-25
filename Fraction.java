@@ -169,4 +169,83 @@ public class Fraction {
     public void setWholeNumber(int wholeNumber){
         this.wholeNumber = wholeNumber;
     }
+    
+     public static Fraction mixedToImproper(Fraction x) {
+    	Fraction ret;
+    	
+        int newNum = x.getDenominator()*x.getWholeNumber()+x.getNumerator();
+        String s = Integer.toString(newNum)+"/"+Integer.toString(x.getDenominator());
+        ret = new Fraction(s);
+        
+        return ret;
+    }
+     
+    public Fraction mixedToImproper(){
+         Fraction f = mixedToImproper(this);
+         this.setFraction(f.getWholeNumber(), f.getNumerator(), f.getDenominator());
+         
+         return f;
+    }
+    
+    public static Fraction improperToMixed(Fraction improper){
+        Fraction ret;
+    	int WN = improper.numerator / improper.denominator;
+    	int numerator = improper.numerator % improper.denominator;
+    	String output = Integer.toString(WN) + " " + numerator+"/"+improper.denominator;
+    	ret = new Fraction(output);
+    	
+    	return ret;
+    }
+    
+    public static Fraction add(Fraction x,Fraction y){
+    	 int WN = 0;
+    	 
+    	 Fraction ret1 = x,ret2 = y;
+    	 
+    	 if(x.getWholeNumber() !=0 && y.getWholeNumber()!=0) {
+	    	 ret1 = mixedToImproper(x);
+	    	 ret2 = mixedToImproper(y);
+    	 }else if(x.getWholeNumber() !=0 && y.getWholeNumber() == 0){
+    		 ret1 = mixedToImproper(x);
+    	 }else if(y.getWholeNumber() !=0 && x.getWholeNumber() == 0){
+    		 ret2 = mixedToImproper(y);
+    	 }else {
+    		 ret1 = x;
+    		 ret2 = y;
+    	 }
+    	 
+    	 String finale = null;
+    	 Fraction rico;
+    	 
+         if(ret1.getDenominator() == ret2.getDenominator()) {
+        	 int sumNum = ret1.numerator + ret2.numerator;
+        	 int sumDenum = ret1.denominator;
+        	 finale = Integer.toString(WN) + " " + Integer.toString(sumNum)+"/"+Integer.toString(sumDenum);
+        	 rico = new Fraction(finale);
+         }else {
+        	 int lcm = lcm(ret1.denominator,ret2.denominator);
+        	 int n1 = lcm/ret1.denominator*ret1.numerator;
+        	 int n2 = lcm/ret2.denominator*ret2.numerator;
+        	 int sumNum = n1+n2;
+        	 int sumDenum = lcm;
+        	 finale = Integer.toString(WN) + " " + Integer.toString(sumNum)+"/"+Integer.toString(sumDenum);
+        	 
+        	 rico = new Fraction(finale);
+        	 
+         }
+          
+         return rico;
+    }
+    
+    public static int lcm(int d1,int d2){
+    	 int lcm = (d1>d2)?d1:d2;
+    	 while(true) {
+    		 if(lcm %d1 == 0 && lcm %d2==0) {
+    			 break;
+    		 }
+    		 ++lcm;
+    	 }
+    	 
+    	 return lcm;
+    }
 }
