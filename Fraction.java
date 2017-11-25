@@ -11,15 +11,25 @@ import java.util.StringTokenizer;
  *
  * @author Bojo Alcisto
  */
-public class Fraction {
+public class Fraction{
     private int numerator;
     private int denominator;
     private int wholeNumber;
+    private static boolean reduce = true;
+    /**
+     * Set if it is preferred to reduce fractions manually
+     * @param x boolean default set to true
+     */
+    public static void autoReduce(boolean x){
+        Fraction.reduce = x;
+    }
     
     public Fraction(int wholeNum, int numerator, int denominator){
+        if(this.denominator == 0) throw new ArithmeticException("Cannot have 0 as denominator");
         this.numerator = numerator;
         this.denominator = denominator;
         this.wholeNumber = wholeNum;
+        if(reduce == true) this.reduce(this.wholeNumber, this.numerator, this.denominator);
     }
     
     public Fraction(String fraction){
@@ -42,7 +52,6 @@ public class Fraction {
                 tokens[2].matches("\\d+")
                 ){
                 
-                
                 this.numerator = Integer.parseInt(tokens[0]);
                 this.denominator = Integer.parseInt(tokens[2]);
                 this.wholeNumber = 0;
@@ -57,12 +66,10 @@ public class Fraction {
                 this.numerator = Integer.parseInt(tokens[2]);
                 this.denominator = Integer.parseInt(tokens[4]);
         }else{
-            System.out.println("Wrong Format");
+            throw new ArithmeticException("Wrong Fraction Format");
         }
-        
-        /*for(String token: tokens){
-            System.out.println(token);
-        }*/
+        if(this.denominator == 0) throw new ArithmeticException("Cannot have 0 as denominator");
+        if(reduce == true) this.reduce(this.wholeNumber, this.numerator, this.denominator);
     }
     
     public Fraction(){
@@ -92,18 +99,16 @@ public class Fraction {
         this.numerator = (int)(tempFraction*(double)placeValue); //assign class variables
         
         this.denominator = placeValue;
+        if(this.denominator == 0) throw new ArithmeticException("Cannot have 0 as denominator");
+        if(reduce == true) this.reduce(this.wholeNumber, this.numerator, this.denominator);
     }
     
     public Fraction(int wholeNumber){
         this(0,wholeNumber,1);
     }
     
-    public Fraction copy(Fraction fraction){
-        this.numerator = fraction.numerator;
-        this.denominator = fraction.denominator;
-        this.wholeNumber = fraction.wholeNumber;
-        
-        return fraction;
+    public static Fraction copy(Fraction fraction){
+        return new Fraction(fraction.getWholeNumber(), fraction.getNumerator(), fraction.denominator);
     }
     
     public int getNumerator(){
@@ -136,6 +141,7 @@ public class Fraction {
         this.numerator = f.getNumerator();
         this.denominator = f.getDenominator();
         this.wholeNumber = f.getWholeNumber();
+        if(reduce == true) this.reduce(this.wholeNumber, this.numerator, this.denominator);
     }
     
     public void setFraction(int wholeNumber, int numerator, int denominator){
@@ -143,6 +149,7 @@ public class Fraction {
         this.numerator = f.getNumerator();
         this.denominator = f.getDenominator();
         this.wholeNumber = f.getWholeNumber();
+        if(reduce == true) this.reduce(this.wholeNumber, this.numerator, this.denominator);
     }
     
     public void setFraction(double fraction){
@@ -150,6 +157,7 @@ public class Fraction {
         this.numerator = f.getNumerator();
         this.denominator = f.getDenominator();
         this.wholeNumber = f.getWholeNumber();
+        if(reduce == true) this.reduce(this.wholeNumber, this.numerator, this.denominator);
     }
     
     public void setFraction(int numerator, int denominator){
@@ -157,6 +165,7 @@ public class Fraction {
         this.numerator = f.getNumerator();
         this.denominator = f.getDenominator();
         this.wholeNumber = f.getWholeNumber();
+        if(reduce == true) this.reduce(this.wholeNumber, this.numerator, this.denominator);
     }
     
     public void setFraction(int wholeNumber){
@@ -164,18 +173,22 @@ public class Fraction {
         this.numerator = f.getNumerator();
         this.denominator = f.getDenominator();
         this.wholeNumber = f.getWholeNumber();
+        if(reduce == true) this.reduce(this.wholeNumber, this.numerator, this.denominator);
     }
     
     public void setDenominator(int denominator){
         this.denominator = denominator;
+        if(reduce == true) this.reduce(this.wholeNumber, this.numerator, this.denominator);
     }
     
     public void setNumerator(int numerator){
         this.numerator = numerator;
+        if(reduce == true) this.reduce(this.wholeNumber, this.numerator, this.denominator);
     }
     
     public void setWholeNumber(int wholeNumber){
         this.wholeNumber = wholeNumber;
+        if(reduce == true) this.reduce(this.wholeNumber, this.numerator, this.denominator);
     }
     
      public static Fraction mixedToImproper(Fraction x) {
@@ -183,8 +196,8 @@ public class Fraction {
     	
         int newNum = x.getDenominator()*x.getWholeNumber()+x.getNumerator();
         String s = Integer.toString(newNum)+"/"+Integer.toString(x.getDenominator());
+        //System.out.println(s);
         ret = new Fraction(s);
-        
         return ret;
     }
      
@@ -197,12 +210,118 @@ public class Fraction {
     
     public static Fraction improperToMixed(Fraction improper){
         Fraction ret;
-    	int WN = improper.numerator / improper.denominator;
+        
+        int WN;
+        if(improper.getWholeNumber() == 0)
+            WN = improper.numerator / improper.denominator;
+        else{
+            WN = improper.wholeNumber + (improper.numerator/improper.denominator);
+        }
     	int numerator = improper.numerator % improper.denominator;
-    	String output = Integer.toString(WN) + " " + numerator+"/"+improper.denominator;
-    	ret = new Fraction(output);
-    	
+        
+        String output;
+        if(numerator == 0) {
+            output = Integer.toString(WN) + "/1";
+        }else{
+            output = Integer.toString(WN) + " " + numerator+"/"+improper.denominator;
+        }
+        ret = new Fraction(output);
     	return ret;
+    }
+    
+    public Fraction improperToMixed(){
+        Fraction f = improperToMixed(this);
+        this.setFraction(f.getWholeNumber(), f.numerator, f.denominator);
+        
+        return f;
+    }
+    
+    private void reduce(int wholeNumber, int numerator, int denominator){
+         
+        if(numerator == 0) {
+            numerator = 0;
+            wholeNumber = 0;
+            denominator = 1;
+        }
+        
+        if(wholeNumber != 0 && numerator >= denominator){
+            int WN = wholeNumber + (numerator/denominator);
+            
+            numerator = numerator % denominator;
+
+            if(numerator == 0) {
+                wholeNumber = 0;
+                numerator = WN;
+                denominator = 1;
+            }else{
+                wholeNumber = WN;
+            }
+        }
+            
+          int smaller;
+          smaller = numerator < denominator ? numerator: denominator;
+
+          int HCF = 0;
+          for(int i=smaller;i>0;--i){
+              if(numerator%i==0 && denominator%i== 0){
+                      HCF = i;
+
+                      break;
+              }
+          }
+	      
+            numerator = numerator/HCF;
+            denominator = denominator/HCF;
+
+            this.wholeNumber = wholeNumber;
+            this.numerator = numerator;
+            this.denominator = denominator;
+    }
+    
+    public static Fraction reduce(Fraction sum) {
+		// TODO Auto-generated method stub
+            if(sum.numerator == 0) return new Fraction(0);    
+            if(sum.wholeNumber != 0 && sum.numerator >= sum.denominator){
+                int WN = sum.wholeNumber + (sum.numerator/sum.denominator);
+
+                sum.numerator = sum.numerator % sum.denominator;
+
+                if(sum.numerator == 0) {
+                    sum.wholeNumber = 0;
+                    sum.numerator = WN;
+                    sum.denominator = 1;
+                }else{
+                    sum.wholeNumber = WN;
+                }
+            }
+            
+            int smaller;
+	      Fraction ret;
+	      String finale;
+	      smaller = sum.numerator < sum.denominator ? sum.numerator:sum.denominator;
+	      
+	      int HCF = 0;
+	      for(int i=smaller;i>0;--i){
+	    	  if(sum.numerator%i==0 && sum.denominator%i== 0){
+	    		  HCF = i;
+	    		  
+	    		  break;
+	    	  }
+	      }
+	      
+	      sum.numerator = sum.numerator/HCF;
+	      sum.denominator = sum.denominator/HCF;
+	      finale = Integer.toString(sum.getWholeNumber()) + " " + Integer.toString(sum.numerator)+"/"+Integer.toString(sum.denominator);
+	      
+	      ret = new Fraction(finale);
+	      return ret;
+    }
+    
+    public Fraction reduce(){
+        Fraction f = Fraction.reduce(this);
+        this.setFraction(f.wholeNumber, f.numerator, f.denominator);
+        
+        return f;
     }
     
     public static Fraction add(Fraction x,Fraction y){
