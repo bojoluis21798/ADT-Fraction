@@ -363,6 +363,7 @@ public class Fraction{
     
     public Fraction add(Fraction x){
         Fraction sum = Fraction.add(this, x);
+        this.setFraction(sum.wholeNumber, sum.numerator, sum.denominator);
         return sum;
     }
     
@@ -413,7 +414,7 @@ public class Fraction{
     
     public Fraction subtract(Fraction x){
         Fraction diff = Fraction.subtract(this, x);
-        
+        this.setFraction(diff.wholeNumber, diff.numerator, diff.denominator);
         return diff;
     }
     
@@ -429,7 +430,7 @@ public class Fraction{
     
     public Fraction multiply(Fraction x){
         Fraction ret = Fraction.multiply(this, x);
-        
+        this.setFraction(ret.wholeNumber, ret.numerator, ret.denominator);
         return ret;
     }
     
@@ -440,7 +441,7 @@ public class Fraction{
     
     public Fraction divide(Fraction x){
         Fraction quotient = Fraction.divide(this, x);
-        
+        this.setFraction(quotient.wholeNumber, quotient.numerator, quotient.denominator);
         return quotient;
     }
 }
