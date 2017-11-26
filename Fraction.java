@@ -47,7 +47,7 @@ public class Fraction{
             this.wholeNumber = 0;
         }else if(
                 tokens.length == 3 &&
-                tokens[0].matches("\\d+") && 
+                (tokens[0].matches("\\d+") || tokens[0].matches("-\\d+")) && 
                 tokens[1].equals("/") &&
                 tokens[2].matches("\\d+")
                 ){
@@ -129,7 +129,7 @@ public class Fraction{
         if(this.getWholeNumber() != 0){
             retval = this.getWholeNumber() + " " + retval;
         }
-        if(this.getDenominator() != 1){
+        if(this.getNumerator() != 0 && this.getDenominator() != 1){
             retval = retval + "/" + this.getDenominator();
         }
         
@@ -236,11 +236,6 @@ public class Fraction{
             numerator *= -1;
              negative = true;
          }
-        if(numerator == 0) {
-            numerator = 0;
-            wholeNumber = 0;
-            denominator = 1;
-        }
         
         if(wholeNumber != 0 && numerator >= denominator){
             int WN = wholeNumber + (numerator/denominator);
@@ -255,25 +250,25 @@ public class Fraction{
                 wholeNumber = WN;
             }
         }
-            
-          int smaller;
-          smaller = numerator < denominator ? numerator: denominator;
-          int HCF = 0;
-          for(int i=smaller;i>0;--i){
-              if(numerator%i==0 && denominator%i== 0){
-                      HCF = i;
+           if(numerator != 0){ 
+            int smaller;
+            smaller = numerator < denominator ? numerator: denominator;
+            int HCF = 0;
+            for(int i=smaller;i>0;--i){
+                if(numerator%i==0 && denominator%i== 0){
+                        HCF = i;
 
-                      break;
-              }
-          }
-	      
-            numerator = numerator/HCF;
-            denominator = denominator/HCF;
-
-            if(negative){
-                numerator *= -1;
+                        break;
+                }
             }
-            
+
+              numerator = numerator/HCF;
+              denominator = denominator/HCF;
+
+              if(negative){
+                  numerator *= -1;
+              }
+           }
             this.wholeNumber = wholeNumber;
             this.numerator = numerator;
             this.denominator = denominator;
