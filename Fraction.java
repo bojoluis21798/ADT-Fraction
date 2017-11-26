@@ -361,6 +361,12 @@ public class Fraction{
          return rico;
     }
     
+    public Fraction add(Fraction x){
+        Fraction sum = Fraction.add(this, x);
+        this.setFraction(sum.wholeNumber, sum.numerator, sum.denominator);
+        return sum;
+    }
+    
     public static int lcm(int d1,int d2){
     	 int lcm = (d1>d2)?d1:d2;
     	 while(true) {
@@ -369,7 +375,6 @@ public class Fraction{
     		 }
     		 ++lcm;
     	 }
-    	 
     	 return lcm;
     }
     public static Fraction subtract(Fraction x, Fraction y){
@@ -405,5 +410,43 @@ public class Fraction{
                  rico = new Fraction(WN, diffNum, diffDenum);
          }
          return rico;
+    }
+    
+    public Fraction subtract(Fraction x){
+        Fraction diff = Fraction.subtract(this, x);
+        this.setFraction(diff.wholeNumber, diff.numerator, diff.denominator);
+        
+        return diff;
+    }
+    
+    public static Fraction multiply(Fraction x, Fraction y){
+        x.mixedToImproper();
+        y.mixedToImproper();
+        
+        int numerator = x.getNumerator() * y.getNumerator();
+        int denominator = x.getDenominator() * y.getDenominator();
+        
+        return new Fraction(numerator,denominator);
+    }
+    
+    public Fraction multiply(Fraction x){
+        Fraction ret = Fraction.multiply(this, x);
+        
+        this.setFraction(ret.getWholeNumber(), ret.getNumerator(), ret.getDenominator());
+        
+        return ret;
+    }
+    
+    public static Fraction divide(Fraction x, Fraction y){
+        return Fraction.multiply(new Fraction(x.wholeNumber ,x.numerator, x.denominator),
+                new Fraction(y.wholeNumber, y.denominator, y.numerator));
+    }
+    
+    public Fraction divide(Fraction x){
+        Fraction quotient = Fraction.divide(this, x);
+        
+        this.setFraction(quotient.wholeNumber, quotient.numerator, quotient.denominator);
+        
+        return quotient;
     }
 }
